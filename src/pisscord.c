@@ -1,6 +1,6 @@
 #include <server.h>
 #include <client.h>
-#include <err.h>
+#include <errs.h>
 
 #include <stdlib.h>
 #include <stdio.h>

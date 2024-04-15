@@ -1,37 +1,48 @@
 #include <server.h>
-#include <err.h>
+#include <errs.h>
+#include <utils.h>
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#include <unistd.h>
+
+int handlemsg(char const *restrict msg)
+{
+	if (*msg != vers()) {
+		LOG("version mismatch. msgvers = %d, expected = %d\n", *msg, vers());
+		return BAD_VERS;
+	}
+	/* if id is zero, assign an ID and do handshake
+	 * if id is nonzero, use COMM to index into function pointer arr
+	 * etc
+	 */
+	return GOOD;
+}
 
 int server(char *ip, int port)
 {
-	fprintf(stdout, "opening server on %s@%d\n", ip, port);
+	fprintf(stdout, "opening server on %s::%d\n", ip, port);
 
-	int fd = socket(AF_INET, SOCK_DGRAM, 0);
-	if (fd < 0) {
-		fprintf(stderr, "bad fd\n");
-		return INIT_ERR;
-	}
-
+	int fd = getfd();
 	struct sockaddr_in addr = {0};
-	addr.sin_family = AF_INET;
-	addr.sin_port = htons(port);
-	addr.sin_addr.s_addr = inet_addr(ip);
+	initaddr(&addr, ip, port);
+	char buff[256] = {0};
 
 	if (bind(fd, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
-		fprintf(stderr, "bad bind\n");
+		LOG("bad bind %s::%d\n", ip, port);
+		close(fd);
 		return INIT_ERR;
 	}
-	for (int i = 0; i < 2; i++) {
-		char buff[256] = {0};
-		socklen_t size = sizeof(addr);
-		recvfrom(fd, buff, 256, 0, (struct sockaddr*)&addr, &size);
-		fprintf(stdout, "rec data: %s\n", buff);
-		fprintf(stdout, "%d\n", htons(addr.sin_addr.s_addr));
+
+	int status = GOOD;
+	while (status == GOOD) {
+		recvfrom(fd, buff, 256, 0, NULL, NULL);
+		LOG("recieved data: %s\n", buff);
+		status = handlemsg(buff);
 	}
 
+	close(fd);
 	return EXIT_SUCCESS;
 }

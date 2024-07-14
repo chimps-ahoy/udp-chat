@@ -1,18 +1,19 @@
-EXEC = pisscord
-VERSION = 0.0.0
+EXEC    = pisscord
+VERSION = 000
 
-TOPDIR := $(shell pwd)
-SRCDIR := $(TOPDIR)/src
-BINDIR := $(TOPDIR)/bin
-OBJDIR := $(TOPDIR)/obj
-HDRDIR := $(TOPDIR)/lib
+TOPDIR != pwd
+SRCDIR ::= $(TOPDIR)/src
+HDRDIR ::= $(TOPDIR)/lib
+BINDIR ::= $(TOPDIR)/bin
 
-SOURCES := $(shell find $(SRCDIR) -name "*.c") 
-OBJECTS := $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SOURCES))
+SOURCES != find $(SRCDIR) -name "*.c"
+OBJECTS != echo $(SOURCES) | sed -e 's,\.c,.o,g'
+HDRS    != find $(HDRDIR) -name "*.h"
 
-PREFIX = /usr/local
+PREFIX    = /usr/local
 MANPREFIX = $(PREFIX)/share/man
 
 INCS = -I$(HDRDIR)
 
-CFLAGS = -std=c2x -pedantic -Wall $(INCS) -DVERSION=\"$(VERSION)\"
+CC     =/bin/cc
+CFLAGS = -std=c2x -pedantic -Wall $(INCS) -DVERSION=$(VERSION)

@@ -1,4 +1,5 @@
 #ifndef CLIENT_H
 #define CLIENT_H
-int client(char *, int);
+#include "status.h"
+Status client(char *, int);
 #endif

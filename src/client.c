@@ -1,6 +1,6 @@
-#include <client.h>
-#include <errs.h>
-#include <utils.h>
+#include "client.h"
+#include "status.h"
+#include "utils.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -8,7 +8,7 @@
 #include <netinet/in.h>
 #include <unistd.h>
 
-int client(char *ip, int port)
+Status client(char *ip, int port)
 {
 	fprintf(stdout, "connecting to server on %s::%d\n", ip, port);
 

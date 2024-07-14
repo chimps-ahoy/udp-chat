@@ -1,6 +1,6 @@
-#include <server.h>
-#include <errs.h>
-#include <utils.h>
+#include "server.h"
+#include "status.h"
+#include "utils.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -8,10 +8,10 @@
 #include <netinet/in.h>
 #include <unistd.h>
 
-int handlemsg(char const *restrict msg)
+Status handlemsg(Byte const *restrict msg)
 {
-	if (*msg != vers()) {
-		LOG("version mismatch. msgvers = %d, expected = %d\n", *msg, vers());
+	if (*msg != VERSION) {
+		LOG("version mismatch. msgvers = %d, expected = %d\n", *msg, VERSION);
 		return BAD_VERS;
 	}
 	/* if id is zero, assign an ID and do handshake
@@ -21,14 +21,14 @@ int handlemsg(char const *restrict msg)
 	return GOOD;
 }
 
-int server(char *ip, int port)
+Status server(char const *restrict ip, int port)
 {
 	fprintf(stdout, "opening server on %s::%d\n", ip, port);
 
 	int fd = getfd();
 	struct sockaddr_in addr = {0};
 	initaddr(&addr, ip, port);
-	char buff[256] = {0};
+	Byte buff[256] = {0};
 
 	if (bind(fd, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
 		LOG("bad bind %s::%d\n", ip, port);

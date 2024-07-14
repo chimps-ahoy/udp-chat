@@ -1,4 +1,5 @@
 #ifndef SERVER_H
 #define SERVER_H
-int server(char*, int);
+#include "status.h"
+Status server(char const *restrict, int);
 #endif

@@ -1,3 +1,4 @@
+.POSIX:
 include config.mk
 
 # fo debugin
@@ -5,11 +6,10 @@ CFLAGS += -g -DDEBUG
 
 $(EXEC) : $(OBJECTS)
 	mkdir -p $(BINDIR)
-	mkdir -p $(OBJDIR)
-	$(CC) $(CFLAGS) $^ -o $(BINDIR)/$@
+	$(CC) $(CFLAGS) $(OBJECTS) -o $(BINDIR)/$@
 
-$(OBJDIR)%.o : $(SRCDIR)%.c
+.c.o :
 	$(CC) $(CFLAGS) -c $< -o $@ 
 
 clean :
-	rm -f $(BINDIR)/* $(OBJDIR)/*
+	rm -f $(BINDIR)/* $(SRCDIR)/*.o

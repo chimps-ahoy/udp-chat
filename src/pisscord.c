@@ -1,6 +1,6 @@
 #include "server.h"
 #include "client.h"
-#include "status.h"
+#include "types.h"
 
 #include <stdlib.h>
 #include <stdio.h>

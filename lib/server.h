@@ -1,5 +1,5 @@
 #ifndef SERVER_H
 #define SERVER_H
-#include "status.h"
+#include "types.h"
 Status server(char const *restrict, int);
 #endif

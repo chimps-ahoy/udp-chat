@@ -1,5 +1,5 @@
-#include "status.h"
 #include "utils.h"
+#include "types.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -7,7 +7,7 @@
 
 int getfd(void)
 {
-	int fd = socket(AF_INET, SOCK_DGRAM, 0);
+	int fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 	if (fd < 0) {
 		LOG("bad fd: %d\n", fd);
 		fprintf(stderr, "bad fd\n");

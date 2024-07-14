@@ -7,8 +7,7 @@
 #else
 #define LOG(x,...) do {} while(0)
 #endif
-
-typedef unsigned char Byte;
+#define FIELDSIZE(t,f) (sizeof(((t*)0)->f))
 
 int getfd(void);
 void initaddr(struct sockaddr_in * restrict, char const *restrict const, int);

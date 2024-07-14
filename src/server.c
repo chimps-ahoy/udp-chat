@@ -1,24 +1,46 @@
 #include "server.h"
-#include "status.h"
+#include "types.h"
 #include "utils.h"
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <unistd.h>
 
-Status handlemsg(Byte const *restrict msg)
+static Byte usrcnt = 0;
+
+static void handshake(struct message *restrict const msg, int fd, struct sockaddr *sa,
+		              size_t size)
 {
-	if (*msg != VERSION) {
-		LOG("version mismatch. msgvers = %d, expected = %d\n", *msg, VERSION);
+	struct message reply = {
+		.vers = VERSION,
+		.comm = INIT,
+		.usr = ++usrcnt,
+		.data = "Requesting identifier",
+	};
+	union { 
+		unsigned short i;
+		Byte b[2];
+	} u = { .i = sizeof("Requesting identifier") };
+	memcpy(&reply.len, &u.b, FIELDSIZE(struct message, len));
+	sendto(fd, &reply, sizeof(reply), 0, sa, size);
+}
+
+static Status handlemsg(struct message *restrict const msg, int fd, struct sockaddr *sa,
+		                size_t size)
+{
+	static void (*const msghandler[MAXCOMM])(struct message *restrict const, int,
+			                                 struct sockaddr*, size_t) = {
+		[INIT] = handshake,
+	};
+	if (msg->vers != VERSION) {
+		LOG("version mismatch. msgvers = %hhd, expected = %hhd\n", msg->vers, VERSION);
 		return BAD_VERS;
 	}
-	/* if id is zero, assign an ID and do handshake
-	 * if id is nonzero, use COMM to index into function pointer arr
-	 * etc
-	 */
-	return GOOD;
+	msghandler[msg->comm](msg, fd, sa, size);
+	return MAXERR;
 }
 
 Status server(char const *restrict ip, int port)
@@ -28,7 +50,6 @@ Status server(char const *restrict ip, int port)
 	int fd = getfd();
 	struct sockaddr_in addr = {0};
 	initaddr(&addr, ip, port);
-	Byte buff[256] = {0};
 
 	if (bind(fd, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
 		LOG("bad bind %s::%d\n", ip, port);
@@ -37,10 +58,13 @@ Status server(char const *restrict ip, int port)
 	}
 
 	int status = GOOD;
+	struct message msg;
 	while (status == GOOD) {
-		recvfrom(fd, buff, 256, 0, NULL, NULL);
-		LOG("recieved data: %s\n", buff);
-		status = handlemsg(buff);
+		struct sockaddr cl;
+		socklen_t sl = sizeof(cl);
+		recvfrom(fd, &msg, sizeof(msg), 0, &cl, &sl);
+		LOG("recieved data: %s\n", msg.data);
+		status = handlemsg(&msg, fd, &cl, sl);
 	}
 
 	close(fd);

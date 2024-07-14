@@ -1,5 +1,5 @@
 #include "client.h"
-#include "status.h"
+#include "types.h"
 #include "utils.h"
 
 #include <stdlib.h>
@@ -15,11 +15,17 @@ Status client(char *ip, int port)
 	int fd = getfd();
 	struct sockaddr_in addr = {0};
 	initaddr(&addr, ip, port);
-	char buff[256] = {0};
 
-	fgets(buff, 256, stdin);
-	sendto(fd, buff, 256, 0, (struct sockaddr*)&addr, sizeof(addr));
-	fprintf(stdout, "sent: %s\n", buff);
+	struct message msg = {
+		.vers = VERSION,
+		.comm = INIT,
+		.usr  = 0,
+		.data = "handshakey!!",
+	};
+
+	sendto(fd, &msg, sizeof(msg), 0, (struct sockaddr*)&addr, sizeof(addr));
+	recvfrom(fd, &msg, sizeof(msg), 0, NULL, NULL);
+	LOG("recieved data: %s\n", msg.data);
 
 	close(fd);
 	return EXIT_SUCCESS;

@@ -1,13 +1,14 @@
-#include "server.h"
-#include "types.h"
-#include "utils.h"
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <unistd.h>
+
+#include "types.h"
+#include "server.h"
+#include "utils.h"
+
 
 static Byte usrcnt = 0;
 

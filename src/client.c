@@ -1,12 +1,12 @@
-#include "client.h"
-#include "types.h"
-#include "utils.h"
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <unistd.h>
+
+#include "types.h"
+#include "client.h"
+#include "utils.h"
 
 Status client(char *ip, int port)
 {

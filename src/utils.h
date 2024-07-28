@@ -1,6 +1,6 @@
+/* Requires netinet/in.h */
 #ifndef UTILS
 #define UTILS
-#include <netinet/in.h>
 #ifdef DEBUG
 #include <stdio.h>
 #define LOG(x,...) fprintf(stderr,"in %s::%s() @ L%d:\n\t " x, __FILE__, __func__, __LINE__ __VA_OPT__(,) __VA_ARGS__)

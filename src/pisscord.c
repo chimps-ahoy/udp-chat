@@ -1,10 +1,10 @@
-#include "server.h"
-#include "client.h"
-#include "types.h"
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
+#include "types.h"
+#include "server.h"
+#include "client.h"
 
 int main(int argc, char **argv)
 {

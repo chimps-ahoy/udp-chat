@@ -1,9 +1,10 @@
-#include "utils.h"
-#include "types.h"
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <arpa/inet.h>
+#include <netinet/in.h>
+
+#include "types.h"
+#include "utils.h"
 
 int getfd(void)
 {

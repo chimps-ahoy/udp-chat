@@ -3,10 +3,12 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <unistd.h>
+#include <string.h>
 
 #include "types.h"
 #include "client.h"
 #include "utils.h"
+
 
 Status client(char *ip, int port)
 {
@@ -25,7 +27,23 @@ Status client(char *ip, int port)
 
 	sendto(fd, &msg, sizeof(msg), 0, (struct sockaddr*)&addr, sizeof(addr));
 	recvfrom(fd, &msg, sizeof(msg), 0, NULL, NULL);
-	LOG("recieved data: %s\n", msg.data);
+
+	char name[20] = {0};
+	printf("Identifier: ");
+	fgets(name, 20, stdin);
+	name[strcspn(name, "\n")] = 0;
+	printf("\n");
+
+	memcpy(msg.data, name, 20);
+	union {
+		unsigned short i;
+		Byte b[2];
+	} u = {
+		.i = 20
+	};
+	msg.len[0] = u.b[0];
+	msg.len[1] = u.b[1];
+	sendto(fd, &msg, sizeof(msg), 0, (struct sockaddr*)&addr, sizeof(addr));
 
 	close(fd);
 	return EXIT_SUCCESS;

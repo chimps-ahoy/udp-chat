@@ -18,4 +18,4 @@ FLAGS =
 
 CC     =/bin/cc
 CFLAGS = -std=c2x -pedantic -Wall $(LIBS) -DVERSION=$(VERSION) \
-		 -D_POSIX_C_SOURCE_200112L $(FLAGS)
+		 -D_POSIX_C_SOURCE_200112L

@@ -9,6 +9,11 @@
 #endif
 #define FIELDSIZE(t,f) (sizeof(((t*)0)->f))
 
+#define recvfrom(fd,buf,size,flags,from,fromlen) do {\
+recvfrom(fd, buf, size, flags, from, fromlen);\
+LOG("recieved: %s\n", (char*)buf.data);\
+} while (0);
+
 int getfd(void);
 void initaddr(struct sockaddr_in * restrict, char const *restrict const, int);
 

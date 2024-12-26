@@ -1,6 +1,8 @@
 .POSIX:
 include config.mk
 
+CFLAGS += -DDEBUG
+
 $(EXEC) : $(OBJECTS)
 	mkdir -p $(BINDIR)
 	$(CC) $(CFLAGS) $(OBJECTS) -o $(BINDIR)/$@
